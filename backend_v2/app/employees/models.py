@@ -19,8 +19,8 @@ class Employee(SQLModel, table=True):  # This will create a table in the databas
     age:int
     department:str
     salary:float
-    created_at:datetime = Field(Column(pg.TIMESTAMP, default=datetime.now))
-    updated_at:datetime = Field(Column(pg.TIMESTAMP, default=datetime.now))
+    created_at:datetime = Field(sa_column=Column(pg.TIMESTAMP, default=datetime.now))
+    updated_at:datetime = Field(sa_column=Column(pg.TIMESTAMP, default=datetime.now))
 
 
     def __repr__(self):
