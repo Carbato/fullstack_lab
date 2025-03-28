@@ -24,7 +24,7 @@ class EmployeeService:
         return new_employee
 
     async def update_employee(self, employee_uid:str, update_data:EmployeeUpdateModel, session: AsyncSession):
-        employee_to_update = self.get_a_employee(employee_uid, session) # Get the employee to update
+        employee_to_update = await self.get_a_employee(employee_uid, session) # Get the employee to update
         if employee_to_update is not None:
             update_data_dict = update_data.model_dump()
             for key, value in update_data_dict.items():
@@ -36,12 +36,12 @@ class EmployeeService:
     
 
     async def delete_employee(self, employee_uid:str, session: AsyncSession):
-        employee_to_delete = self.get_a_employee(employee_uid, session)
+        employee_to_delete = await self.get_a_employee(employee_uid, session)
 
         if employee_to_delete is not None:
             session.delete(employee_to_delete)
             await session.delete(employee_to_delete)
             await session.commit()
-            return {}
+            return {"message": "Employee deleted successfully"}
         else:
             return None

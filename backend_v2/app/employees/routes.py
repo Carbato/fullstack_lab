@@ -1,10 +1,8 @@
 from fastapi import APIRouter, status, Depends
 from fastapi.exceptions import HTTPException
-from app.employees.schemas import Employee, EmployeeUpdateModel
+from app.employees.schemas import Employee, EmployeeUpdateModel, EmployeeCreateModel
 from sqlmodel.ext.asyncio.session import AsyncSession
-
 from app.employees.service import EmployeeService 
-from app.employees.models import Employee
 from app.db.main_db import get_session
 
 from typing import List
@@ -15,7 +13,7 @@ employee_service = EmployeeService()
 
 
 
-@employee_router.get("/", response_model=List[Employee])
+@employee_router.get("/", response_model=List[Employee]) # This will return a list of employees
 async def get_employees(
     session: AsyncSession = Depends(get_session) 
     ):
@@ -24,9 +22,9 @@ async def get_employees(
     return employees
 
 
-@employee_router.post("/", status_code=status.HTTP_201_CREATED, response_model=Employee)
+@employee_router.post("/", status_code=status.HTTP_201_CREATED, response_model=Employee) # This will return the created employee
 async def create_a_employee(
-    employee_data:Employee, 
+    employee_data:EmployeeCreateModel, 
     session: AsyncSession = Depends(get_session)
     ) -> dict:
 
@@ -36,9 +34,9 @@ async def create_a_employee(
 
 
 
-@employee_router.get("/{employee_uid}")
+@employee_router.get("/{employee_uid}", response_model=Employee) # This will return a single employee
 async def get_employee(
-    employee_uid:int, 
+    employee_uid:str, 
     session: AsyncSession=Depends(get_session)
     ) -> dict:
 
@@ -49,9 +47,9 @@ async def get_employee(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Employee not found")
 
 
-@employee_router.put("/{employee_uid}", status_code=status.HTTP_202_ACCEPTED)
+@employee_router.put("/{employee_uid}", status_code=status.HTTP_202_ACCEPTED,  response_model=Employee) # This will return the updated employee
 async def update_employee(
-    employee_uid:int, 
+    employee_uid:str, 
     employee_update_data:EmployeeUpdateModel, 
     session: AsyncSession = Depends(get_session)
     ) -> dict:
@@ -63,14 +61,14 @@ async def update_employee(
         raise HTTPException(status.HTTP_404_NOT_FOUND, detail="Employee not found")
 
 
-@employee_router.delete("/{employee_uid}", status_code=status.HTTP_204_NO_CONTENT)
+@employee_router.delete("/{employee_uid}", status_code=status.HTTP_202_ACCEPTED) # This will delete the employee
 async def delete_employee(
-    employee_uid:int,
+    employee_uid:str,
     session: AsyncSession = Depends(get_session)
     ):
 
     employee_to_delete = await employee_service.delete_employee(employee_uid, session)
     if employee_to_delete:
-        return None
+        return {"message": "Employee deleted successfully"}
     else:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Employee not found")
