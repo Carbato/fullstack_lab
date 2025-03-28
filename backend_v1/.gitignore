@@ -1,0 +1,18 @@
+# Environment files
+.env
+.env.local
+
+# Virtual environment
+venv/
+.env/
+
+# Database
+*.db
+*.sqlite3
+
+# Logs
+*.log
+
+# IDE
+.vscode/
+.idea/
