@@ -16,7 +16,6 @@ async_engine = AsyncEngine( # This is the async engine
 
 async def init_db() -> None: # This function will create the database tables
     async with async_engine.begin() as conn:
-        #from app.employees.models import Client
         await conn.run_sync(SQLModel.metadata.create_all)
 
 

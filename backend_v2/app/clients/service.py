@@ -5,7 +5,7 @@ from .models import Client
 
 class ClientService:
     async def get_all_clients(self, session: AsyncSession):
-        statement = select(Client).order_by(desc(Client.name)) # order_by(desc(Client.created_at))
+        statement = select(Client).order_by(desc(Client.first_name)) # order_by(desc(Client.created_at))
         result = await session.exec(statement)
         return result.all()
 

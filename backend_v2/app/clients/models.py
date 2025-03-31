@@ -15,13 +15,16 @@ class Client(SQLModel, table=True):  # This will create a table in the database
             default=uuid.uuid4 # This will generate a unique identifier for each record
         )
     )  
-    name:str
-    age:int
-    department:str
-    salary:float
+    lid:str
+    first_name:str
+    last_name:str
+    email:str
+    phone:str
+    address:str
+    service_count:int
     created_at:datetime = Field(sa_column=Column(pg.TIMESTAMP, default=datetime.now))
     updated_at:datetime = Field(sa_column=Column(pg.TIMESTAMP, default=datetime.now))
 
 
     def __repr__(self):
-        return f"<Client {self.name}>"  # This will return the name of the client when the object is printed
+        return f"<Client {self.first_name}>"  # This will return the name of the client when the object is printed

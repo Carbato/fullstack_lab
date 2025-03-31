@@ -15,7 +15,7 @@ version = "v1"
 
 app = FastAPI(
     title="Lab API",
-    description="A simple API to manage employees",
+    description="A simple API to manage users and clients",
     version= version,
     lifespan=life_span
 )
