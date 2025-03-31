@@ -3,7 +3,7 @@ from datetime import datetime
 import uuid
 
 
-class Employee(BaseModel):
+class Client(BaseModel):
     uid:uuid.UUID
     name:str
     age:int
@@ -13,7 +13,7 @@ class Employee(BaseModel):
     updated_at:datetime
 
 
-class EmployeeCreateModel(BaseModel):
+class ClientCreateModel(BaseModel):
     name:str
     age:int
     department:str
@@ -21,7 +21,7 @@ class EmployeeCreateModel(BaseModel):
 
 
 
-class EmployeeUpdateModel(BaseModel):
+class ClientUpdateModel(BaseModel):
     name:str
     age:int
     department:str

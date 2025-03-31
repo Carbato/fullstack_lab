@@ -4,8 +4,8 @@ from datetime import datetime
 import uuid
 
 
-class Employee(SQLModel, table=True):  # This will create a table in the database
-    __tablename__ = "employees"  # This is the name of the table in the database
+class Client(SQLModel, table=True):  # This will create a table in the database
+    __tablename__ = "clients"  # This is the name of the table in the database
 
     uid:uuid.UUID = Field(
         sa_column= Column(
@@ -24,4 +24,4 @@ class Employee(SQLModel, table=True):  # This will create a table in the databas
 
 
     def __repr__(self):
-        return f"<Employee {self.name}>"  # This will return the name of the employee when the object is printed
+        return f"<Client {self.name}>"  # This will return the name of the client when the object is printed

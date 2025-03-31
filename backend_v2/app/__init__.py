@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.employees.routes import employee_router
+from app.clients.routes import client_router
 from contextlib import asynccontextmanager
 from app.db.main_db import init_db
 
@@ -14,10 +14,10 @@ async def life_span(app: FastAPI):
 version = "v1"  
 
 app = FastAPI(
-    title="Employee API",
+    title="Lab API",
     description="A simple API to manage employees",
     version= version,
     lifespan=life_span
 )
 
-app.include_router(employee_router, prefix=f"/api/{version}/employees")
+app.include_router(client_router, prefix=f"/api/{version}/clients")

@@ -7,16 +7,16 @@ from typing import AsyncGenerator
 
 from app.config import Config
 
-async_engine = AsyncEngine(
+async_engine = AsyncEngine( # This is the async engine
     create_engine(
         url=Config.DATABASE_URL, 
         echo=True   # This will print the SQL queries that are executed
     )
 )
 
-async def init_db() -> None:
+async def init_db() -> None: # This function will create the database tables
     async with async_engine.begin() as conn:
-        from app.employees.models import Employee
+        #from app.employees.models import Client
         await conn.run_sync(SQLModel.metadata.create_all)
 
 
