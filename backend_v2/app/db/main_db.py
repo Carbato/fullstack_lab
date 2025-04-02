@@ -10,11 +10,11 @@ from app.config import Config
 async_engine = AsyncEngine( # This is the async engine
     create_engine(
         url=Config.DATABASE_URL, 
-        echo=True   # This will print the SQL queries that are executed
+        echo=True   
     )
 )
 
-async def init_db() -> None: # This function will create the database tables
+async def init_db() -> None: # This function will create the database tables we created with SQLmodel
     async with async_engine.begin() as conn:
         await conn.run_sync(SQLModel.metadata.create_all)
 

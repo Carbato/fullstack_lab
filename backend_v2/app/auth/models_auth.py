@@ -1,5 +1,5 @@
 from sqlmodel import SQLModel, Field, Column  # This is the base class for all models
-import sqlalchemy.dialects.postgresql as pg
+import sqlalchemy.dialects.postgresql as pg # This is the dialect for PostgreSQL
 import uuid
 from datetime import datetime
 
@@ -16,8 +16,13 @@ class User(SQLModel, table=True):
     )  
     username:str
     email:str
-    fisrt_name:str
+    first_name:str
     last_name:str
-    is_verified:bool
-    created_at:datetime
-    updated_at:datetime
+    is_verified:bool = Field(default=False) 
+    password_hash:str = Field(exclude=True)  # This will exclude the password from the response
+    created_at:datetime = Field(sa_column=Column(pg.TIMESTAMP, default=datetime.now))
+    updated_at:datetime = Field(sa_column=Column(pg.TIMESTAMP, default=datetime.now))
+
+
+def __repr__(self):
+    return f"<User {self.username}>"  # This will return the name of the user when the object is printed
