@@ -1,5 +1,5 @@
-.env
+backend_v2/.env
 
-myenv
+backend_v2/myenv/
 
-__pycache__
+backend_v2/__pycache__/
