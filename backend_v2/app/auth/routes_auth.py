@@ -8,6 +8,7 @@ from .utils_auth import create_access_token, decode_access_token, verify_passwd_
 from fastapi.responses import JSONResponse
 from datetime import timedelta
 
+
 auth_router = APIRouter()
 user_service = UserService()    
 

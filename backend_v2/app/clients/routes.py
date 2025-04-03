@@ -4,19 +4,21 @@ from app.clients.schemas import Client, ClientCreateModel, ClientUpdateModel
 from sqlmodel.ext.asyncio.session import AsyncSession
 from app.clients.service import ClientService 
 from app.db.main_db import get_session
-
 from typing import List
+from app.auth.dependencies import AccessTokenBearer
 
 client_router = APIRouter()
 client_service = ClientService()
+access_token_bearer = AccessTokenBearer
 
 
 
 
 @client_router.get("/", response_model=List[Client]) # This will return a list of clients
 async def get_client(
-    session: AsyncSession = Depends(get_session) 
-    ):
+    session: AsyncSession = Depends(get_session),
+    user_details= Depends(access_token_bearer),
+    ): 
 
     clients = await client_service.get_all_clients(session) # This will return all the clients
     return clients
