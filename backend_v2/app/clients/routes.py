@@ -5,11 +5,11 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from app.clients.service import ClientService 
 from app.db.main_db import get_session
 from typing import List
-from app.auth.dependencies import AccessTokenBearer
+from app.auth.dependencies_auth import TokenBearer, AccessTokenBearer
 
 client_router = APIRouter()
 client_service = ClientService()
-access_token_bearer = AccessTokenBearer
+access_token_bearer = AccessTokenBearer()
 
 
 
@@ -19,7 +19,7 @@ async def get_client(
     session: AsyncSession = Depends(get_session),
     user_details= Depends(access_token_bearer),
     ): 
-
+    print(user_details)
     clients = await client_service.get_all_clients(session) # This will return all the clients
     return clients
 
@@ -27,8 +27,10 @@ async def get_client(
 @client_router.post("/", status_code=status.HTTP_201_CREATED, response_model=Client) # This will return the created client
 async def create_a_client(
     client_data:ClientCreateModel, 
-    session: AsyncSession = Depends(get_session)
+    session: AsyncSession = Depends(get_session),
+    user_details= Depends(access_token_bearer),
     ) -> dict:
+    print(user_details)
 
     new_client = await client_service.create_client(client_data, session)
     
@@ -39,8 +41,10 @@ async def create_a_client(
 @client_router.get("/{client_uid}", response_model=Client) # This will return a single client
 async def get_client(
     client_uid:str, 
-    session: AsyncSession=Depends(get_session)
+    session: AsyncSession=Depends(get_session),
+    user_details= Depends(access_token_bearer),
     ) -> dict:
+    print(user_details)
 
     client = await client_service.get_a_client(client_uid, session)
     if client:
@@ -53,8 +57,10 @@ async def get_client(
 async def update_client(
     client_uid:str, 
     client_update_data:ClientUpdateModel, 
-    session: AsyncSession = Depends(get_session)
+    session: AsyncSession = Depends(get_session),
+    user_details= Depends(access_token_bearer),
     ) -> dict:
+    print(user_details)
 
     updated_client = await client_service.update_client(client_uid, client_update_data, session) 
     if updated_client:
@@ -66,9 +72,11 @@ async def update_client(
 @client_router.delete("/{client_uid}", status_code=status.HTTP_202_ACCEPTED) # This will delete the client
 async def delete_client(
     client_uid:str,
-    session: AsyncSession = Depends(get_session)
+    session: AsyncSession = Depends(get_session),
+    user_details= Depends(access_token_bearer),
     ):
-
+    print(user_details)
+    
     client_to_delete = await client_service.delete_client(client_uid, session)
     if client_to_delete:
         return {"message": "Client deleted successfully"}

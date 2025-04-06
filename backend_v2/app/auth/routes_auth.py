@@ -12,6 +12,7 @@ from datetime import timedelta
 auth_router = APIRouter()
 user_service = UserService()    
 
+ACCESS_TOKEN_EXPIRE_MINUTES = 60 # 1 hour
 REFRESH_TOKEN_EXPIRE_DAYS = 2 # 2 days
 
 
@@ -54,7 +55,8 @@ async def login_user(
                 user_data= {
                     'email': user.email,
                     'user_uid': str(user.uid),
-                }
+                },
+                expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES),
                 )
             refresh_token = create_access_token(
                 user_data= {
