@@ -20,7 +20,7 @@ class TokenBearer(HTTPBearer):
         try:
             token_data = decode_access_token(token)
             self.verify_token_data(token_data)  # Implement your token validation here
-            return creds  # Return the original creds object
+            return token_data  # Return the original creds object
         except jwt.ExpiredSignatureError:
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Token has expired")
         except jwt.InvalidSignatureError:

@@ -5,12 +5,13 @@ from app.db.main_db import get_session
 from sqlmodel.ext.asyncio.session import AsyncSession
 from fastapi import HTTPException
 from .utils_auth import create_access_token, decode_access_token, verify_passwd_hash
+from .dependencies_auth import RefreshTokenBearer
 from fastapi.responses import JSONResponse
-from datetime import timedelta
+from datetime import timedelta, datetime
 
 
 auth_router = APIRouter()
-user_service = UserService()    
+user_service = UserService()        
 
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 # 1 hour
 REFRESH_TOKEN_EXPIRE_DAYS = 2 # 2 days
@@ -92,4 +93,25 @@ async def login_user(
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail='Invalid email'
+        )
+    
+
+@auth_router.get('/refresh-token')
+async def get_new_access_token(
+    token_details: dict = Depends(RefreshTokenBearer()
+    )):
+    expires_timestamp = token_details.get('exp')
+
+    if datetime.fromtimestamp(expires_timestamp) > datetime.now():
+        new_access_token =  create_access_token(
+            user_data = token_details.get('user'),
+        )
+        return JSONResponse(content={
+            'message': 'Access token refreshed successfully',
+            'access_token': new_access_token,
+        }, status_code=status.HTTP_200_OK)
+    else:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail='Invvalid or expired token'
         )
