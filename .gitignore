@@ -2,4 +2,6 @@ backend_v2/.env
 
 backend_v2/myenv/
 
+backend_v2/.venv/
+
 backend_v2/__pycache__/

@@ -4,7 +4,7 @@ from fastapi.exceptions import HTTPException
 from fastapi.security import HTTPBearer
 from fastapi.security.http import HTTPAuthorizationCredentials
 from .utils_auth import decode_access_token
-import logging
+from app.db.redis import token_in_blocklist
 from typing import Union
 
 class TokenBearer(HTTPBearer):
@@ -20,6 +20,16 @@ class TokenBearer(HTTPBearer):
         try:
             token_data = decode_access_token(token)
             self.verify_token_data(token_data)  # Implement your token validation here
+            
+            # Check if the token is in the blocklist
+            if await token_in_blocklist(token_data["jti"]):
+                raise HTTPException(
+                    status_code=status.HTTP_403_FORBIDDEN,
+                    detail={
+                        "error": "Token has been revoked",
+                        "resolution": "Please log in again to obtain a new token"},
+                )
+            
             return token_data  # Return the original creds object
         except jwt.ExpiredSignatureError:
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Token has expired")
