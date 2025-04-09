@@ -18,7 +18,7 @@ app = FastAPI(
     title="Lab API",
     description="A simple API to manage users and clients",
     version= version,
-    lifespan=life_span
+    #lifespan=life_span
 )
 
 app.include_router(client_router, prefix=f"/api/{version}/clients")

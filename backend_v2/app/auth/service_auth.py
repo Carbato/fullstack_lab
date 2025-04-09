@@ -22,8 +22,19 @@ class UserService:
             **user_data_dict
             )
         new_user.password_hash = generate_passwd_hash(user_data_dict['password'])
+        new_user.role = "user"  # 
         session.add(new_user)
         await session.commit()
 
-        return new_user
+    async def delete_user(self, user_uid: str, session: AsyncSession):
+        statement = select(User).where(User.uid == user_uid)
+        result = await session.exec(statement)
+        user = result.first()
+        if user:
+            await session.delete(user)
+            await session.commit()
+            return True
+
+        else:
+            return None
 
