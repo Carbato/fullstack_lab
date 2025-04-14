@@ -1,4 +1,4 @@
-from .models_auth import User
+from app.db.models import User
 from .schemas_auth import UserCreateModel
 from .utils_auth import generate_passwd_hash
 from sqlmodel.ext.asyncio.session import AsyncSession

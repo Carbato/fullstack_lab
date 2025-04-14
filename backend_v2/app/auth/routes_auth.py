@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, status
-from .schemas_auth import UserCreateModel, UserModel, UserLoginModel
+from .schemas_auth import UserCreateModel, UserModel, UserLoginModel, UserSamplesModel
 from .service_auth import UserService
 from app.db.main_db import get_session 
 from sqlmodel.ext.asyncio.session import AsyncSession
@@ -39,7 +39,10 @@ async def create_user_Account(
         )
     new_user = await user_service.create_user(user_data, session)
 
-    return new_user
+    return JSONResponse(
+        content={
+            'message': 'User created successfully',
+        },)
 
 
 
@@ -128,10 +131,10 @@ async def get_new_access_token(
 
 
 #---------------------- GET USER INFO ----------------------
-@auth_router.get('/me')
+@auth_router.get('/me', response_model=UserSamplesModel)
 async def get_user(
     user = Depends(get_current_user),
-    _:bool = Depends(role_checker)
+    #_:bool = Depends(role_checker)
     ):
     return user
 

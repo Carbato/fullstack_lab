@@ -1,7 +1,7 @@
 from sqlmodel.ext.asyncio.session import AsyncSession
 from .schemas import ClientCreateModel, ClientUpdateModel
 from sqlmodel import select, desc
-from .models import Client
+from app.db.models import Client
 
 class ClientService:
     async def get_all_clients(self, session: AsyncSession):

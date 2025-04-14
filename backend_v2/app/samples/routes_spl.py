@@ -21,12 +21,26 @@ role_checker = RoleChecker(['admin', 'superuser'])
 
 async def get_samples(
     session: AsyncSession = Depends(get_session),
-    user_details= Depends(access_token_bearer),
+    token_details: dict = Depends(access_token_bearer),
     ): 
-    print(user_details)
+    print(token_details)
     samples = await sample_service.get_all_samples(session) 
     return samples
 
+#---------------------- GET CLIENT SAMPLES ----------------------
+@sample_router.get(
+        "/client/{client_uid}", 
+        response_model=List[Sample]
+        ) # This will return all samples
+
+async def get_samples(
+    session: AsyncSession = Depends(get_session),
+    token_details: dict = Depends(access_token_bearer),
+    client_uid:str = None,
+    ): 
+    print(token_details)
+    samples = await sample_service.get_client_samples(client_uid, session)
+    return samples
 
 #---------------------- CREATE A SAMPLE ----------------------
 @sample_router.post(
@@ -39,11 +53,11 @@ async def get_samples(
 async def create_a_sample(
     sample_data:SampleCreateModel, 
     session: AsyncSession = Depends(get_session),
-    user_details= Depends(access_token_bearer)
+    token_details: dict = Depends(access_token_bearer)
     ) -> dict:
-    print(user_details)
+    user_uid = token_details.get("user")["user_uid"]
 
-    new_sample = await sample_service.create_sample(sample_data, session)
+    new_sample = await sample_service.create_sample(user_uid, sample_data, session)
 
     return new_sample
 
@@ -57,9 +71,9 @@ async def create_a_sample(
 async def get_sample(
     sample_uid:str, 
     session: AsyncSession=Depends(get_session),
-    user_details= Depends(access_token_bearer),
+    token_details: dict = Depends(access_token_bearer),
     ) -> dict:
-    print(user_details)
+    print(token_details)
 
     the_sample = await sample_service.get_a_sample(sample_uid, session)
     if the_sample:
@@ -81,9 +95,9 @@ async def update_a_sample(
     sample_uid:str, 
     sample_data:SampleUpdateModel, 
     session: AsyncSession = Depends(get_session),
-    user_details= Depends(access_token_bearer)
+    token_details: dict = Depends(access_token_bearer)
     ) -> dict:
-    print(user_details)
+    print(token_details)
 
     updated_sample = await sample_service.update_sample(sample_uid, sample_data, session)
     if updated_sample:
@@ -102,9 +116,9 @@ async def update_a_sample(
 async def delete_a_sample(
     sample_uid:str, 
     session: AsyncSession = Depends(get_session),
-    user_details= Depends(access_token_bearer)
+    token_details: dict = Depends(access_token_bearer)
     ) -> dict:
-    print(user_details)
+    print(token_details)
 
     deleted_sample = await sample_service.delete_sample(sample_uid, session)
     if deleted_sample:

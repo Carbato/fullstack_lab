@@ -1,7 +1,7 @@
 from sqlmodel.ext.asyncio.session import AsyncSession
 from .schemas_spl import SampleCreateModel, SampleUpdateModel
 from sqlmodel import select, desc
-from .models_spl import Sample
+from app.db.models import Sample
 
 
 class SampleService:
@@ -10,15 +10,21 @@ class SampleService:
         result = await session.exec(statement)
         return result.all()
     
+    async def get_client_samples(self, client_uid, session: AsyncSession):
+        statement = select(Sample).where(Sample.client_uid == client_uid).order_by(desc(Sample.created_at))
+        result = await session.exec(statement)
+        return result.all() 
+    
     async def get_a_sample(self, sample_uid: str, session: AsyncSession):
         setatement = select(Sample).where(Sample.uid == sample_uid)
         result = await session.exec(setatement)
         the_sample = result.first()
         return the_sample if the_sample is not None else None
     
-    async def create_sample(self, sample_data: SampleCreateModel, session: AsyncSession):
+    async def create_sample(self, user_uid:str ,sample_data: SampleCreateModel, session: AsyncSession):
         sample_data_dict = sample_data.model_dump()
         new_sample = Sample(**sample_data_dict)
+        new_sample.user_uid = user_uid
         session.add(new_sample)
         await session.commit()
         return new_sample

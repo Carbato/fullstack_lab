@@ -4,7 +4,6 @@ import uuid
 
 class Sample(BaseModel):
     uid:uuid.UUID
-    cod_ref:str
     client_uid:uuid.UUID
     user_uid:uuid.UUID
     sample_type:str
@@ -17,9 +16,7 @@ class Sample(BaseModel):
 
 
 class SampleCreateModel(BaseModel):
-    cod_ref:str
     client_uid:uuid.UUID
-    user_uid:uuid.UUID
     sample_type:str
     animal:str
     date_reception:datetime

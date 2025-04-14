@@ -1,5 +1,7 @@
 from pydantic import BaseModel, Field
+from app.samples.schemas_spl import Sample
 from datetime import datetime
+from typing import List
 import uuid
 
 class UserCreateModel(BaseModel):
@@ -20,6 +22,10 @@ class UserModel(BaseModel):
     password_hash:str = Field(exclude=True)  # This will exclude the password from the response
     created_at:datetime 
     updated_at:datetime 
+
+
+class UserSamplesModel(UserModel):
+    samples:List[Sample] 
 
 
 class UserLoginModel(BaseModel):
