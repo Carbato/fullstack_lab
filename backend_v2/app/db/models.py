@@ -53,7 +53,7 @@ class Client(SQLModel, table=True):  # This will create a table in the database
     updated_at:datetime = Field(sa_column=Column(pg.TIMESTAMP, default=datetime.now))
 
     def __repr__(self):
-        return f"<Client {self.first_name}>"  # This will return the name of the client when the object is printed
+        return f"<Client {self.first_name} {self.last_name}>"  # This will return the name of the client when the object is printed
 
 
 
@@ -80,7 +80,25 @@ class Sample(SQLModel, table=True):  # This will create a table in the database
     user:Optional[User] = Relationship(back_populates="samples") # This will create a relationship with the User model
     
     def __repr__(self):
-        return f"<Sample {self.cod_ref}>"
+        return f"<Sample {self.sample_type} with uid {self.uid}>"
 
 
 
+class History(SQLModel, table=True):  # This will create a table in the database
+    __tablename__ = "history"  # This is the name of the table in the database
+
+    uid:uuid.UUID = Field(
+        sa_column= Column(
+            pg.UUID,  # This will create a UUID column in the database
+            nullable=False, 
+            primary_key=True, 
+            default=uuid.uuid4 # This will generate a unique identifier for each record
+        )
+    )
+    user_uid:Optional[uuid.UUID] = Field(default=None, foreign_key="users.uid")
+    action:str
+    obj:str
+    created_at:datetime = Field(sa_column=Column(pg.TIMESTAMP, default=datetime.now))
+
+    def __repr__(self):
+        return f"<The user {self.user_uid} used the function {self.action} in {self.obj}>"
