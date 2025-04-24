@@ -26,6 +26,7 @@ class UserService:
         session.add(new_user)
         await session.commit()
 
+
     async def delete_user(self, user_uid: str, session: AsyncSession):
         statement = select(User).where(User.uid == user_uid)
         result = await session.exec(statement)
