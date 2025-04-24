@@ -23,6 +23,9 @@ class SampleCreateModel(BaseModel):
     date_taken:datetime
     state:str
 
+    def __repr__(self):
+        return f"Sample of client='{self.client_uid}', type={self.sample_type}, animal={self.animal}"
+
 
 class SampleUpdateModel(BaseModel):
     client_uid:uuid.UUID

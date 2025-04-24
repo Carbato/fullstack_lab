@@ -3,12 +3,15 @@ from fastapi.exceptions import HTTPException
 from .schemas_spl import Sample, SampleCreateModel, SampleUpdateModel
 from sqlmodel.ext.asyncio.session import AsyncSession
 from .service_spl import SampleService
+from app.history.service_his import HistoryService
+from app.history.schemas_his import CreateHistoryModel
 from app.db.main_db import get_session
 from typing import List
 from app.auth.dependencies_auth import AccessTokenBearer, RoleChecker
 
 sample_router = APIRouter()
 sample_service = SampleService()
+history_service = HistoryService()
 access_token_bearer = AccessTokenBearer()
 role_checker = RoleChecker(['admin', 'superuser'])
 
@@ -59,6 +62,10 @@ async def create_a_sample(
 
     new_sample = await sample_service.create_sample(user_uid, sample_data, session)
 
+    history_dict = {"user_uid":user_uid, "action":"Create Sample", "obj": repr(sample_data) }
+    history = CreateHistoryModel(**history_dict)
+    new_history = await history_service.create_a_history(history, session)
+    print(new_history)
     return new_sample
 
 
