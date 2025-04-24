@@ -6,7 +6,7 @@ import uuid
 
 passwd_context = CryptContext(schemes=["bcrypt"])
 
-ACCESS_TOKEN_EXPIRE_SECONDS = 1  # Token expiration time in seconds
+ACCESS_TOKEN_EXPIRE_MINUTES = 1  # Token expiration time in minutes
 
 def generate_passwd_hash(password: str) -> str:
     """
@@ -29,7 +29,7 @@ def create_access_token(user_data: dict, expires_delta: timedelta = None, refres
     if expires_delta is not None:
         payload["exp"] = datetime.now(timezone.utc) + expires_delta
     else:
-        payload["exp"] = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_SECONDS)
+        payload["exp"] = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     payload['jti'] = str(uuid.uuid4())  # Unique identifier for the token
     payload['refresh'] = refresh_token  # Indicates if the token is a refresh token
 

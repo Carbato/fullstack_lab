@@ -35,3 +35,6 @@ class SampleUpdateModel(BaseModel):
     date_reception:datetime
     date_taken:datetime
     state:str
+
+    def __repr__(self):
+        return f"Sample of client='{self.client_uid}', type={self.sample_type}, animal={self.animal}"

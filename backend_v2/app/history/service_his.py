@@ -28,7 +28,7 @@ class HistoryService:
     async def get_a_history(self, uid:str, session:AsyncSession):
         statement = select(History).where(History.uid == uid).order_by(desc(History.created_at))
         result = await session.exec(statement)
-        return result.all()
+        return result.first()
     
     async def create_a_history(self, history_data:CreateHistoryModel, session:AsyncSession):
         history_data_dict = history_data.model_dump()
@@ -41,7 +41,9 @@ class HistoryService:
         history_to_delete = await self.get_oldest_history(date_limit, session)
         
         if history_to_delete is not None:
-            await session.delete(history_to_delete)
+            for history in history_to_delete:
+                await session.delete(history)
+            
             await session.commit()
             return True
         else:
