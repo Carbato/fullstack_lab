@@ -24,7 +24,7 @@ class SampleCreateModel(BaseModel):
     state:str
 
     def __repr__(self):
-        return f"Sample of client='{self.client_uid}', type={self.sample_type}, animal={self.animal}"
+        return f"Sample: client='{self.client_uid}', recieved={self.date_reception} ,type={self.sample_type}"
 
 
 class SampleUpdateModel(BaseModel):
@@ -37,4 +37,4 @@ class SampleUpdateModel(BaseModel):
     state:str
 
     def __repr__(self):
-        return f"Sample of client='{self.client_uid}', type={self.sample_type}, animal={self.animal}"
+        return f"Sample: client='{self.client_uid}', recieved={self.date_reception} ,type={self.sample_type}"

@@ -9,12 +9,20 @@ from app.db.main_db import get_session
 from typing import List
 from app.auth.dependencies_auth import AccessTokenBearer, RoleChecker
 
+#---------------------- SERVICES ----------------------
 sample_router = APIRouter()
 sample_service = SampleService()
 history_service = HistoryService()
 access_token_bearer = AccessTokenBearer()
 role_checker = RoleChecker(['admin', 'superuser'])
 
+#---------------------- HISTORY FUNTION ----------------------
+async def create_history(token_details:dict, function_name:str, repr_info:str, session):
+    user_uid = token_details['user']['user_uid']
+    history_dict = {"user_uid":user_uid, "action":str(function_name), "obj": str(repr_info) }
+    history = CreateHistoryModel(**history_dict)
+    new_history = await history_service.create_a_history(history, session)
+    print(new_history)
 
 #---------------------- GET ALL SAMPLES ----------------------
 @sample_router.get(
@@ -62,10 +70,8 @@ async def create_a_sample(
 
     new_sample = await sample_service.create_sample(user_uid, sample_data, session)
 
-    history_dict = {"user_uid":user_uid, "action":"Create Sample", "obj": repr(sample_data) }
-    history = CreateHistoryModel(**history_dict)
-    new_history = await history_service.create_a_history(history, session)
-    print(new_history)
+    await create_history(token_details, create_a_sample.__name__, sample_data.__repr__, session)
+
     return new_sample
 
 
@@ -104,10 +110,12 @@ async def update_a_sample(
     session: AsyncSession = Depends(get_session),
     token_details: dict = Depends(access_token_bearer)
     ) -> dict:
-    print(token_details)
 
     updated_sample = await sample_service.update_sample(sample_uid, sample_data, session)
     if updated_sample:
+        
+        await create_history(token_details, update_a_sample.__name__, sample_data.__repr__, session)
+
         return updated_sample
     else:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Sample not found")
@@ -129,6 +137,9 @@ async def delete_a_sample(
 
     deleted_sample = await sample_service.delete_sample(sample_uid, session)
     if deleted_sample:
+
+        await create_history(token_details, delete_a_sample.__name__, sample_uid, session)
+
         return {"message": "Sample deleted successfully"}
     else:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Sample not found")
