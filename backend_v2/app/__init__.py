@@ -8,7 +8,7 @@ from app.db.main_db import init_db
 
 
 @asynccontextmanager  # This is a context manager that will run asynchronously
-async def life_span(app: FastAPI):
+async def life_span (app: FastAPI):
     print(f"Server is starting ...")
     await init_db()
     yield   # This is where the application code will run
